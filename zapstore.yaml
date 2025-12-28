@@ -1,0 +1,4 @@
+repository: https://github.com/zapcooking/mobile
+assets:
+  - android/app/build/outputs/apk/release/*.apk
+

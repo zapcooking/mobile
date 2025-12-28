@@ -1,0 +1,50 @@
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Web app (from submodule)
+web/node_modules/
+web/.svelte-kit/
+web/build/
+web/.env
+web/.env.*
+!web/.env.example
+web/vite.config.js.timestamp-*
+web/vite.config.ts.timestamp-*
+
+# Android build outputs
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/.idea/
+android/capacitor-cordova-android-plugins/build/
+
+# Keystore (sensitive)
+android/*.keystore
+android/keystore.properties
+
+# Capacitor
+.capacitor/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+.DS_Store
+**/.DS_Store
+android/.gradle/
+android/.idea/
+android/*.keystore
+android/**/local.properties
+android/keystore.properties
