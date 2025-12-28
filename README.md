@@ -34,11 +34,11 @@ The `web/` directory contains the web application sourced from [zapcooking/front
    git submodule update --init --recursive
    ```
 
-3. Build the web app:
+3. Build the web app for mobile:
    ```bash
    cd web
    pnpm install
-   pnpm build
+   pnpm build:mobile
    cd ..
    ```
 
@@ -55,7 +55,7 @@ To pull the latest changes from the frontend repository:
 cd web
 git pull origin main  # or the appropriate branch
 cd ..
-pnpm build --prefix web
+pnpm build:mobile --prefix web
 npx cap sync android
 ```
 
@@ -65,16 +65,16 @@ cd web
 git fetch origin
 git checkout <commit-or-tag>
 cd ..
-pnpm build --prefix web
+pnpm build:mobile --prefix web
 npx cap sync android
 ```
 
 ## Building Android Release APK
 
-1. Ensure the web app is built:
+1. Ensure the web app is built for mobile:
    ```bash
    cd web
-   pnpm build
+   pnpm build:mobile
    cd ..
    ```
 
@@ -109,10 +109,10 @@ The `zapstore.yaml` configuration will automatically include the release APK fro
 
 ### Running in Android Studio
 
-1. Build the web app:
+1. Build the web app for mobile:
    ```bash
    cd web
-   pnpm build
+   pnpm build:mobile
    cd ..
    ```
 
@@ -170,10 +170,10 @@ git submodule update --init --recursive
 
 ### Capacitor can't find web build
 
-Ensure you've built the web app:
+Ensure you've built the web app for mobile:
 ```bash
 cd web
-pnpm build
+pnpm build:mobile
 cd ..
 npx cap sync android
 ```
@@ -189,7 +189,7 @@ npx cap sync android
 2. Rebuild web and sync:
    ```bash
    cd ../web
-   pnpm build
+   pnpm build:mobile
    cd ..
    npx cap sync android
    ```

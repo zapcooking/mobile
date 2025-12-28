@@ -48,3 +48,7 @@ android/.idea/
 android/*.keystore
 android/**/local.properties
 android/keystore.properties
+node_modules/
+package.json
+package-lock.json
+pnpm-lock.yaml

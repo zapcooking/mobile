@@ -28,7 +28,7 @@ mobile/
 
 ## Key Changes from Frontend
 
-1. **Capacitor Config**: `webDir` changed from `'build'` to `'web/build'`
+1. **Capacitor Config**: `webDir` set to `'web/dist'` (mobile builds output to `dist/`)
 2. **Web App**: Will be managed as git submodule pointing to `zapcooking/frontend`
 3. **Android**: Copied as-is, preserving all adapters and signing setup
 4. **Zapstore**: Added `zapstore.yaml` for publishing
@@ -56,10 +56,10 @@ git submodule add https://github.com/zapcooking/frontend.git web
 # Initialize
 git submodule update --init --recursive
 
-# Build web app
+# Build web app for mobile
 cd web
 pnpm install
-pnpm build
+pnpm build:mobile
 cd ..
 ```
 
@@ -109,13 +109,13 @@ zapstore publish
    cd web
    git pull origin main
    cd ..
-   pnpm build --prefix web
+   pnpm build:mobile --prefix web
    npx cap sync android
    ```
 
 ### Release Process
 1. Update web submodule to desired commit/tag
-2. Build web: `pnpm build --prefix web`
+2. Build web for mobile: `pnpm build:mobile --prefix web`
 3. Sync Capacitor: `npx cap sync android`
 4. Build APK: `cd android && ./gradlew assembleRelease`
 5. Publish: `zapstore publish`

@@ -16,11 +16,11 @@ After cloning this repository, you need to set up the web submodule that points 
    git submodule update --init --recursive
    ```
 
-3. Build the web app:
+3. Build the web app for mobile:
    ```bash
    cd web
    pnpm install
-   pnpm build
+   pnpm build:mobile
    cd ..
    ```
 
