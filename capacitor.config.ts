@@ -3,12 +3,11 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'cooking.zap.app',
   appName: 'Zap Cooking',
-  webDir: 'web/dist',
+  webDir: 'web/build',
   server: {
     androidScheme: 'https'
   },
   android: {
-    // Enable edge-to-edge display
     backgroundColor: '#111827',
     allowMixedContent: false
   },
@@ -25,4 +24,3 @@ const config: CapacitorConfig = {
 };
 
 export default config;
-

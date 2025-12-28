@@ -1,196 +1,118 @@
 # Zap Cooking Mobile
 
-This repository manages the mobile Android app for Zap Cooking, built with Capacitor.
+Android app for [Zap Cooking](https://zap.cooking) - a Nostr-native cooking and recipe platform.
 
 ## Repository Structure
 
 ```
 mobile/
-├── android/          # Capacitor Android wrapper + adapters
-├── web/             # Web app (sourced from zapcooking/frontend)
-├── capacitor.config.ts
+├── android/                    # Capacitor Android wrapper
+├── web/                        # Git submodule → zapcooking/frontend
+├── scripts/
+│   └── build-mobile.js         # Build script (applies static adapter)
+├── svelte.config.mobile.js     # Mobile-specific config (static adapter)
+├── capacitor.config.ts         # Capacitor configuration
+├── package.json
 ├── zapstore.yaml
 └── README.md
 ```
 
-## Web App Source
+## Prerequisites
 
-The `web/` directory contains the web application sourced from [zapcooking/frontend](https://github.com/zapcooking/frontend).
+- Node.js 22.x
+- pnpm
+- Android Studio with SDK 34+
+- Java 17+
 
-**Important:** The web folder is managed as a git submodule. Do not edit files in `web/` directly in this repository.
+## Initial Setup
 
-## Setup
+```bash
+# Clone with submodule
+git clone --recursive https://github.com/zapcooking/mobile.git
+cd mobile
 
-### Initial Setup
+# Or if already cloned:
+git submodule update --init
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/zapcooking/mobile.git
-   cd mobile
-   ```
+# Install mobile dependencies
+pnpm install
 
-2. Initialize and update the web submodule:
-   ```bash
-   git submodule update --init --recursive
-   ```
+# Install web dependencies
+pnpm install:web
+```
 
-3. Build the web app for mobile:
-   ```bash
-   cd web
-   pnpm install
-   pnpm build:mobile
-   cd ..
-   ```
+## Development Workflow
 
-4. Sync Capacitor with the web build:
-   ```bash
-   npx cap sync android
-   ```
+### Update Web Source
 
-### Updating Web App
-
-To pull the latest changes from the frontend repository:
+Pull latest changes from the frontend repo:
 
 ```bash
 cd web
-git pull origin main  # or the appropriate branch
+git pull origin main
 cd ..
-pnpm build:mobile --prefix web
-npx cap sync android
+git add web
+git commit -m "Update web submodule"
 ```
 
-Or update to a specific commit/tag:
+### Build for Android
+
 ```bash
-cd web
-git fetch origin
-git checkout <commit-or-tag>
-cd ..
-pnpm build:mobile --prefix web
-npx cap sync android
-```
-
-## Building Android Release APK
-
-1. Ensure the web app is built for mobile:
-   ```bash
-   cd web
-   pnpm build:mobile
-   cd ..
-   ```
-
-2. Sync Capacitor:
-   ```bash
-   npx cap sync android
-   ```
-
-3. Build the release APK:
-   ```bash
-   cd android
-   ./gradlew assembleRelease
-   ```
-
-4. The APK will be located at:
-   ```
-   android/app/build/outputs/apk/release/app-release.apk
-   ```
-
-## Publishing to Zapstore
-
-1. Build the release APK (see above)
-
-2. Publish using zapstore CLI:
-   ```bash
-   zapstore publish
-   ```
-
-The `zapstore.yaml` configuration will automatically include the release APK from `android/app/build/outputs/apk/release/*.apk`.
-
-## Development
-
-### Running in Android Studio
-
-1. Build the web app for mobile:
-   ```bash
-   cd web
-   pnpm build:mobile
-   cd ..
-   ```
-
-2. Sync Capacitor:
-   ```bash
-   npx cap sync android
-   ```
-
-3. Open Android Studio:
-   ```bash
-   npx cap open android
-   ```
-
-### Hot Reload (Development)
-
-For faster development, you can run the web app in dev mode and point Capacitor to it:
-
-1. In one terminal, start the web dev server:
-   ```bash
-   cd web
-   pnpm dev
-   ```
-
-2. Update `capacitor.config.ts` temporarily:
-   ```typescript
-   server: {
-     url: 'http://localhost:5173',  // or your dev server port
-     androidScheme: 'https'
-   }
-   ```
-
-3. Sync and run:
-   ```bash
-   npx cap sync android
-   npx cap open android
-   ```
-
-Remember to revert the `server.url` before building for release!
-
-## Notes
-
-- The `android/` directory contains mobile-specific configurations and adapters
-- The `web/` directory should not be modified directly - all web changes go to `zapcooking/frontend`
-- Capacitor sync must be run after any web build changes
-- The keystore for signing is located at `android/zap-cooking-release.keystore` (not committed to git)
-
-## Troubleshooting
-
-### Web submodule is empty
-
-If the `web/` directory appears empty:
-```bash
-git submodule update --init --recursive
-```
-
-### Capacitor can't find web build
-
-Ensure you've built the web app for mobile:
-```bash
-cd web
+# Build web app with static adapter
 pnpm build:mobile
-cd ..
-npx cap sync android
+
+# Sync with Capacitor
+pnpm cap:sync
+
+# Open in Android Studio
+pnpm cap:open
 ```
 
-### Android build fails
+### Build Release APK
 
-1. Clean the build:
-   ```bash
-   cd android
-   ./gradlew clean
-   ```
+```bash
+# Full release build
+pnpm release
 
-2. Rebuild web and sync:
-   ```bash
-   cd ../web
-   pnpm build:mobile
-   cd ..
-   npx cap sync android
-   ```
+# Or manually:
+pnpm build:mobile
+pnpm cap:sync
+cd android
+./gradlew assembleRelease
+```
 
+The APK will be at: `android/app/build/outputs/apk/release/app-release.apk`
+
+## Signing
+
+Release builds require a keystore. Create `android/keystore.properties`:
+
+```properties
+storeFile=zap-cooking-release.keystore
+storePassword=YOUR_PASSWORD
+keyAlias=YOUR_KEY_ALIAS
+keyPassword=YOUR_KEY_PASSWORD
+```
+
+## Zapstore Publishing
+
+```bash
+# Build release APK
+pnpm release
+
+# Publish to Zapstore
+zapstore publish
+```
+
+## Architecture
+
+- **Frontend repo** ([zapcooking/frontend](https://github.com/zapcooking/frontend)): Pure web app, deploys to Cloudflare
+- **Mobile repo** (this): Wraps frontend for Android with Capacitor
+
+The mobile build process:
+1. Temporarily applies `svelte.config.mobile.js` (static adapter) to web/
+2. Builds the SvelteKit app as static files
+3. Restores original config
+4. Capacitor syncs the static files into the Android app
+
+This keeps the frontend repo clean (web-only) while mobile handles its own concerns.
